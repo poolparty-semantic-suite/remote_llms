@@ -1,0 +1,86 @@
+models:
+  claude3_7sonnet:
+    name_or_url:
+      eu: eu.anthropic.claude-3-7-sonnet-20250219-v1:0
+      us: us.anthropic.claude-3-7-sonnet-20250219-v1:0
+    endpoint_platform: bedrock
+
+  claude2_1:
+    name_or_url: anthropic.claude-v2:1
+    endpoint_platform: bedrock
+
+  claude_instant:
+    name_or_url: anthropic.claude-instant-v1
+    endpoint_platform: bedrock
+
+  claude3_haiku:
+    name_or_url: anthropic.claude-3-haiku-20240307-v1:0
+    endpoint_platform: bedrock
+
+  claude3_sonnet:
+    name_or_url: anthropic.claude-3-sonnet-20240229-v1:0
+    endpoint_platform: bedrock
+
+  titan:
+    name_or_url: amazon.titan-text-express-v1
+    endpoint_platform: bedrock
+
+  jurassic2_mid:
+    name_or_url: ai21.j2-mid-v1
+    endpoint_platform: bedrock
+
+  jurassic2_ultra:
+    name_or_url: ai21.j2-ultra-v1
+    endpoint_platform: bedrock
+
+  jamba_instruct:
+    name_or_url: ai21.jamba-instruct-v1:0
+    endpoint_platform: bedrock
+
+  llama2chat70:
+    name_or_url: meta.llama2-70b-chat-v1
+    endpoint_platform: bedrock
+
+  llama2chat13:
+    name_or_url: meta.llama2-13b-chat-v1
+    endpoint_platform: bedrock
+
+  llama3instruct8:
+    name_or_url: meta.llama3-8b-instruct-v1:0
+    endpoint_platform: bedrock
+
+  llama3instruct70:
+    name_or_url: meta.llama3-70b-instruct-v1:0
+    endpoint_platform: bedrock
+
+  gpt_4o_mini:
+    name_or_url: gpt-4o-mini
+    endpoint_platform: openai
+
+  gemini2_flash_lite:
+    name_or_url: gemini-2.0-flash-lite
+    endpoint_platform: google
+
+  llama3_2instruct3:
+    name_or_url: eu.meta.llama3-2-3b-instruct-v1:0
+    #name_or_url: us.meta.llama3-2-3b-instruct-v1:0 # if region is US
+    endpoint_platform: bedrock
+
+  llama3_2instruct1:
+    name_or_url: eu.meta.llama3-2-1b-instruct-v1:0
+    #name_or_url: us.meta.llama3-2-1b-instruct-v1:0 # if region is US
+    endpoint_platform: bedrock
+
+  deepseek_r1:
+    name_or_url: us.deepseek.r1-v1:0
+    endpoint_platform: bedrock
+
+languages:
+  en: en
+  de: de
+  nl: nl
+  fr: fr
+  es: es
+  ja: ja
+  zh: zh
+
