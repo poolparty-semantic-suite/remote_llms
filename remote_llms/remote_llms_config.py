@@ -45,4 +45,4 @@ class AwsKeys(BaseSettings):
 
 settings = Settings()
 print(f"{settings.models = }, {settings.languages = }")
-# print(Settings().model_dump())
+print(Settings().model_dump())
