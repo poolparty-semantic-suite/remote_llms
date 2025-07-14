@@ -44,5 +44,5 @@ class AwsKeys(BaseSettings):
     aws_secret_access_key: str = Field(..., alias='AWS_SERVER_SECRET_KEY')
 
 settings = Settings()
-print(f"{settings.models = }, {settings.languages = }")
-print(Settings().model_dump())
+# print(f"{settings.models = }, {settings.languages = }")
+# print(Settings().model_dump())

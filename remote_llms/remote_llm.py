@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 from openai import OpenAI
 
-from remote_llms.remote_llms_config import settings
+from .remote_llms_config import settings
 
 BEDROCK_CLIENT = None
 OPENAI_CLIENT = None
