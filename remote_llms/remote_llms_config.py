@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from pathlib import Path
 from typing import Any, List, Dict
@@ -19,6 +20,15 @@ class EndpointPlatforms(Enum):
 class LlmModel(BaseModel):
     name_or_url: str | Dict[str, str]
     endpoint_platform: EndpointPlatforms
+
+    def get_uid(self) -> str:
+        if isinstance(self.name_or_url, str):
+            return self.name_or_url
+        else:
+            aws_settings = AwsKeys()
+            region = aws_settings.aws_region[:2]
+            logging.info(f"AWS_REGION: {region}")
+            return self.name_or_url[region]
 
 
 class Settings(BaseSettings):
