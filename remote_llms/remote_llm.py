@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 from openai import OpenAI
 
-from remote_llms.remote_llms_config import settings
+from .remote_llms_config import settings
 
 BEDROCK_CLIENT = None
 OPENAI_CLIENT = None
@@ -28,9 +28,9 @@ def bedrock_client():
                                   )
     credentials = BEDROCK_CLIENT._request_signer._credentials
 
-    print("Access Key:", credentials.access_key)
-    print("Secret Key:", credentials.secret_key[:4] + "..." if credentials.secret_key else "None")
-    print("Token:", credentials.token[:10] + "..." if credentials.token else "None")
+    logging.info(f"Access Key: {credentials.access_key}")
+    logging.info(f"Secret Key: {credentials.secret_key[:4] + '...' if credentials.secret_key else 'None'}")
+    logging.info(f"Token: {credentials.token[:10] + '...' if credentials.token else 'None'}")
     return BEDROCK_CLIENT
 
 def openai_client():
@@ -78,8 +78,6 @@ def call_bedrock_titan_llm(model_name: str,
     )
     response_body = json.loads(response["body"].read())
     completion = response_body['results'][0]["outputText"]
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {completion}")
     return completion
 
 
@@ -108,8 +106,6 @@ def call_bedrock_jurassic2_llm(model_name: str,
     )
     response_body = json.loads(response["body"].read())
     completion = response_body["completions"][0]['data']['text']
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {completion}")
     return completion
 
 
@@ -148,8 +144,6 @@ def call_bedrock_jamba_llm(model_name: str,
     )
     response_body = json.loads(response["body"].read())
     completion = response_body["choices"][0]['message']['content']
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {completion}")
     return completion
 
 
@@ -175,8 +169,6 @@ def call_bedrock_llama2_llm(model_name: str,
     )
     response_body = json.loads(response["body"].read())
     completion = response_body["generation"]
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {completion}")
     return completion
 
 
@@ -212,8 +204,6 @@ def call_bedrock_claude_llm(model_name: str,
     )
     response_body = json.loads(response["body"].read())
     completion = response_body["completion"]
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {completion}")
     return completion
 
 
@@ -251,8 +241,6 @@ def call_bedrock_claude3_llm(model_name: str,
         output = output_list[0]["text"]
     except (IndexError, KeyError):
         output = ""
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {output}")
     return output
 
 def call_bedrock_deepseek_llm(model_name: str,
@@ -276,8 +264,6 @@ def call_bedrock_deepseek_llm(model_name: str,
         output = output_list[0]["text"]
     except (IndexError, KeyError):
         output = ""
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {output}")
     return output
 
 def call_sagemaker_llm(endpoint_url: str,
@@ -310,8 +296,6 @@ def call_sagemaker_llm(endpoint_url: str,
         response.raise_for_status()
     resp_json = response.json()[0]
     gen_output = resp_json['generated_text']
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {gen_output}")
     return gen_output
 
 def call_openai_llm(model_name: str,
@@ -349,8 +333,6 @@ def call_openai_llm(model_name: str,
         **params
     )
     output = response.choices[0].message.content
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {output}")
     return output
 
 def call_google_gemini(model_name: str, prompt:str, system_prompt: str = None, max_len: int= None, params: dict = None):
@@ -375,20 +357,16 @@ def call_google_gemini(model_name: str, prompt:str, system_prompt: str = None, m
         contents=[prompt]
     )
     output = response.text
-    logging.info(f"Prompt: {prompt}")
-    logging.info(f"Generated output: {output}")
-
     return output
 
 
-def call_llm(model_name_or_url: str,
-             # platform: str,
+def call_llm(model_name: str,
              prompt: str,
              instruction_prompt: str = None,
              system_prompt: str = None,
              max_len: int = None) -> str:
     """
-    :param model_name_or_url:
+    :param model_name:
     :param prompt: the entire prompt including the system message and the user message
     :param max_len: max number of output tokens to be generated
     :param system_prompt:
@@ -396,8 +374,12 @@ def call_llm(model_name_or_url: str,
     :return:
     """
     is_system_message_separate = instruction_prompt is not None and system_prompt is not None
-    llm_model = settings.models(model_name_or_url)
-    platform = llm_model.platform
+    llm_model = settings.models[model_name]
+    platform = llm_model.endpoint_platform.value
+    model_name_or_url = llm_model.get_uid()
+    #
+    logging.info(f"Calling {model_name_or_url} on {platform = }, {max_len = }")
+    logging.info(f"Prompt: {prompt}")
     if platform == "bedrock":
         if model_name_or_url.startswith("amazon.titan"):
             gen_out = call_bedrock_titan_llm(model_name=model_name_or_url,
@@ -441,4 +423,5 @@ def call_llm(model_name_or_url: str,
                                      max_len=max_len)
     else:
         raise ValueError(f"Platform {platform} unknown")
+    logging.info(f"Generated output: {gen_out}")
     return gen_out
