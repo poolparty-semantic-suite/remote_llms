@@ -6,6 +6,17 @@ The list of supported LLMs can be found in (./llm-models-config.yml). WARNING: c
 
 Main usage: `call_llm` from (./remote_llms.py)
 
+## Installation
+
+`[poetry/uv] add git+https://github.com/poolparty-semantic-suite/remote_llms.git`
+
+## Usage in your endpoints
+
+To add a choice of LLMs to your endpoints you can define the respective `enum`:
+`RemoteLlmsEnum = Enum("RemoteLlmsEnum", {x: x for x in remote_llms.remote_llms_settings.models.keys()})`
+and then in your models add a field:
+`llm_model: RemoteLlmsEnum = Field(default=list(remote_llms.remote_llms_settings.models.keys())[0], alias="llmModel")`
+
 ## Env variables / Config
 
 The following variables are expected (per platform):

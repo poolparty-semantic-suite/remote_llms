@@ -3,7 +3,7 @@ name = "remote-llms"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Artem Revenko",email = "artreven@gmail.com"}
+    {name = "Artem Revenko",email = "artem.revenko@graphwise.ai"}
 ]
 readme = "README.md"
 requires-python = ">=3.10"
