@@ -34,7 +34,7 @@ class LlmModel(BaseModel):
 class Settings(BaseSettings):
     models: Dict[str, LlmModel] = Field(..., alias='models')
     languages: Dict[str, str] = Field(..., alias='languages')
-    model_config = SettingsConfigDict(yaml_file=Path(__file__).parent.parent / "llm-models-config.yml")
+    model_config = SettingsConfigDict(yaml_file=Path(__file__).parent / "llm-models-config.yml")
 
     @classmethod
     def settings_customise_sources(

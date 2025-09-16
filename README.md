@@ -34,7 +34,7 @@ The following variables are expected (per platform):
 ## Updating models
 
 To add a model:
-1. add the model data to [./llm-models-config.yml](./llm-models-config.yml).
+1. add the model data to [./llm-models-config.yml](remote_llms/llm-models-config.yml).
 2. add a function to call the model to [./remote_llms.py](./remote_llms.py).
 3. update the function `call_llm` in [./remote_llms.py](./remote_llms.py).
 
