@@ -15,6 +15,7 @@ class EndpointPlatforms(Enum):
     BEDROCK = "bedrock"
     OPENAI = "openai"
     GOOGLE = "google"
+    OLLAMA = "ollama"
 
 
 class LlmModel(BaseModel):

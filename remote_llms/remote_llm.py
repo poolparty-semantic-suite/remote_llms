@@ -4,7 +4,8 @@ import logging
 import os
 
 import boto3
-import requests
+# import requests
+import ollama
 from google import genai
 from google.genai import types
 from openai import OpenAI
@@ -14,6 +15,7 @@ from .remote_llms_config import settings
 BEDROCK_CLIENT = None
 OPENAI_CLIENT = None
 GOOGLE_CLIENT = None
+OLLAMA_CLIENT = None
 
 
 def bedrock_client():
@@ -51,6 +53,14 @@ def google_client():
         return GOOGLE_CLIENT
     GOOGLE_CLIENT = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
     return GOOGLE_CLIENT
+
+
+def ollama_client():
+    global OLLAMA_CLIENT
+    if OLLAMA_CLIENT is not None:
+        return OLLAMA_CLIENT
+    OLLAMA_CLIENT = ollama.Client(host=os.getenv("OLLAMA_URL"))
+    return OLLAMA_CLIENT
 
 
 
@@ -266,37 +276,37 @@ def call_bedrock_deepseek_llm(model_name: str,
         output = ""
     return output
 
-def call_sagemaker_llm(endpoint_url: str,
-                       prompt: str,
-                       max_len: int = None,
-                       params: dict = None):
-    if params is None:
-        params = {
-            "max_new_tokens": 512,
-            "return_full_text": False,
-            "do_sample": True,
-            "top_k": 10
-        }
-    if max_len is not None:
-        params["max_new_tokens"] = max_len
-    remote_llm_url = endpoint_url
-    body = {
-        "inputs": prompt,
-        "parameters": params
-    }
-    headers = {'x-api-key': os.getenv('API_KEY')}
-    response = requests.post(
-        url=remote_llm_url, json=body, headers=headers
-    )
-    response.raise_for_status()
-    resp_json = response.json()
-    if 'ErrorCode' in resp_json and resp_json['ErrorCode'] == 'NO_SUCH_ENDPOINT':
-        response.status_code = http.HTTPStatus.FAILED_DEPENDENCY
-        response.reason = "Model Endpoint not reachable"
-        response.raise_for_status()
-    resp_json = response.json()[0]
-    gen_output = resp_json['generated_text']
-    return gen_output
+# def call_sagemaker_llm(endpoint_url: str,
+#                        prompt: str,
+#                        max_len: int = None,
+#                        params: dict = None):
+#     if params is None:
+#         params = {
+#             "max_new_tokens": 512,
+#             "return_full_text": False,
+#             "do_sample": True,
+#             "top_k": 10
+#         }
+#     if max_len is not None:
+#         params["max_new_tokens"] = max_len
+#     remote_llm_url = endpoint_url
+#     body = {
+#         "inputs": prompt,
+#         "parameters": params
+#     }
+#     headers = {'x-api-key': os.getenv('API_KEY')}
+#     response = requests.post(
+#         url=remote_llm_url, json=body, headers=headers
+#     )
+#     response.raise_for_status()
+#     resp_json = response.json()
+#     if 'ErrorCode' in resp_json and resp_json['ErrorCode'] == 'NO_SUCH_ENDPOINT':
+#         response.status_code = http.HTTPStatus.FAILED_DEPENDENCY
+#         response.reason = "Model Endpoint not reachable"
+#         response.raise_for_status()
+#     resp_json = response.json()[0]
+#     gen_output = resp_json['generated_text']
+#     return gen_output
 
 def call_openai_llm(model_name: str,
                     prompt: str,
@@ -421,6 +431,11 @@ def call_llm(model_name: str,
                                      prompt=instruction_prompt if is_system_message_separate else prompt,
                                      system_prompt=system_prompt,
                                      max_len=max_len)
+    elif platform == "ollama":
+        response = ollama_client().generate(model_name_or_url,
+                                            prompt=instruction_prompt if is_system_message_separate else prompt,
+                                            system=system_prompt)
+        gen_out = response.response
     else:
         raise ValueError(f"Platform {platform} unknown")
     logging.info(f"Generated output: {gen_out}")

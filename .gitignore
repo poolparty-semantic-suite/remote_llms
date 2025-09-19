@@ -2,3 +2,4 @@
 experiments/data
 /.env
 *__pycache__
+uv.lock

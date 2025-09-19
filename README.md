@@ -30,6 +30,8 @@ The following variables are expected (per platform):
      * OPENAI_PROJECT_ID=
   * gemini keys
      * GEMINI_API_KEY=
+  * ollama keys
+     * OLLAMA_URL=
 
 ## Updating models
 
