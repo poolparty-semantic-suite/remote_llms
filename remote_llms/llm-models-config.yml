@@ -1,24 +1,4 @@
 models:
-  ollama_deepseek_r1:
-    name_or_url:
-      deepseek-r1
-    endpoint_platform: ollama
-
-  ollama_gptoss:
-    name_or_url:
-      gpt-oss
-    endpoint_platform: ollama
-
-  ollama_gptoss_20b:
-    name_or_url:
-      gpt-oss:20b
-    endpoint_platform: ollama
-
-  ollama_gptoss_120b:
-    name_or_url:
-      gpt-oss:120b
-    endpoint_platform: ollama
-
   claude3_7sonnet:
     name_or_url:
       eu: eu.anthropic.claude-3-7-sonnet-20250219-v1:0
@@ -94,6 +74,26 @@ models:
   deepseek_r1:
     name_or_url: us.deepseek.r1-v1:0
     endpoint_platform: bedrock
+
+  ollama_deepseek_r1:
+    name_or_url:
+      deepseek-r1
+    endpoint_platform: ollama
+
+  ollama_gptoss:
+    name_or_url:
+      gpt-oss
+    endpoint_platform: ollama
+
+  ollama_gptoss_20b:
+    name_or_url:
+      gpt-oss:20b
+    endpoint_platform: ollama
+
+  ollama_gptoss_120b:
+    name_or_url:
+      gpt-oss:120b
+    endpoint_platform: ollama
 
 languages:
   en: en
