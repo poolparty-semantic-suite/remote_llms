@@ -44,3 +44,6 @@ To add a new platform:
 1. add a client for platform. see, for example, `bedrock_client` in [./remote_llms.py](./remote_llms.py).
 2. update the function `call_llm` in [./remote_llms.py](./remote_llms.py).
 3. add new env variables to the `Settings` in [./remote_llms_config.py](./remote_llms_config.py) and to the env example.
+
+# License
+This code is released under the Apache 2.0 License. See [LICENSE](LICENSE) for more details.
