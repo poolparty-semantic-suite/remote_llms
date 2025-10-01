@@ -10,6 +10,8 @@ from pydantic import (
 
 from pydantic_settings import BaseSettings, SettingsConfigDict, YamlConfigSettingsSource, PydanticBaseSettingsSource
 
+from remote_llms import clients
+
 
 class EndpointPlatforms(Enum):
     BEDROCK = "bedrock"
@@ -47,6 +49,26 @@ class Settings(BaseSettings):
             file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (YamlConfigSettingsSource(settings_cls),)
+
+    def model_post_init(self, context: Any, /) -> None:
+        def filter_models(client, platform: EndpointPlatforms) -> dict[str, LlmModel]:
+            try:
+                client()
+            except EnvironmentError:
+                filtered_models = {}
+                for model_name, model in self.models.items():
+                    if model.endpoint_platform == platform:
+                        continue
+                    else:
+                        filtered_models[model_name] = model
+                self.models = filtered_models
+            return self.models
+
+        for cl, pl in [(clients.bedrock_client(), EndpointPlatforms.BEDROCK),
+                       (clients.openai_client(), EndpointPlatforms.OPENAI),
+                       (clients.google_client(), EndpointPlatforms.GOOGLE),
+                       (clients.ollama_client(), EndpointPlatforms.OLLAMA),]:
+            filter_models(cl, pl)
 
 
 class AwsKeys(BaseSettings):

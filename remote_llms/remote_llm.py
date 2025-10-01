@@ -1,67 +1,10 @@
-import http
 import json
 import logging
-import os
 
-import boto3
-# import requests
-import ollama
-from google import genai
 from google.genai import types
-from openai import OpenAI
 
+from .clients import bedrock_client, openai_client, google_client, ollama_client
 from .remote_llms_config import settings
-
-BEDROCK_CLIENT = None
-OPENAI_CLIENT = None
-GOOGLE_CLIENT = None
-OLLAMA_CLIENT = None
-
-
-def bedrock_client():
-    global BEDROCK_CLIENT
-    if BEDROCK_CLIENT is not None:
-        return BEDROCK_CLIENT
-
-    BEDROCK_CLIENT = boto3.client('bedrock-runtime',
-                                  aws_access_key_id=os.getenv("AWS_SERVER_PUBLIC_KEY"),
-                                  aws_secret_access_key=os.getenv("AWS_SERVER_SECRET_KEY"),
-                                  region_name=os.getenv("AWS_REGION")
-                                  )
-    credentials = BEDROCK_CLIENT._request_signer._credentials
-
-    logging.info(f"Access Key: {credentials.access_key}")
-    logging.info(f"Secret Key: {credentials.secret_key[:4] + '...' if credentials.secret_key else 'None'}")
-    logging.info(f"Token: {credentials.token[:10] + '...' if credentials.token else 'None'}")
-    return BEDROCK_CLIENT
-
-def openai_client():
-    global OPENAI_CLIENT
-    if OPENAI_CLIENT is not None:
-        return OPENAI_CLIENT
-
-    OPENAI_CLIENT = OpenAI(
-        organization = os.getenv("OPENAI_ORG_ID"),
-        project = os.getenv("OPENAI_PROJECT_ID"),
-        api_key=os.getenv("OPENAI_API_KEY"),
-    )
-    return OPENAI_CLIENT
-
-def google_client():
-    global GOOGLE_CLIENT
-    if GOOGLE_CLIENT is not None:
-        return GOOGLE_CLIENT
-    GOOGLE_CLIENT = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-    return GOOGLE_CLIENT
-
-
-def ollama_client():
-    global OLLAMA_CLIENT
-    if OLLAMA_CLIENT is not None:
-        return OLLAMA_CLIENT
-    OLLAMA_CLIENT = ollama.Client(host=os.getenv("OLLAMA_URL"))
-    return OLLAMA_CLIENT
-
 
 
 def call_bedrock_titan_llm(model_name: str,
