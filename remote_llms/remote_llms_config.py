@@ -58,7 +58,8 @@ class Settings(BaseSettings):
             except EnvironmentError:
                 filtered_models = {}
                 for model_name, model in self.models.items():
-                    if model.endpoint_platform == platform.value:
+                    logging.warning(f'{model.endpoint_platform == platform = }, {platform = }, {model.endpoint_platform = }.')
+                    if model.endpoint_platform == platform:
                         continue
                     else:
                         filtered_models[model_name] = model
