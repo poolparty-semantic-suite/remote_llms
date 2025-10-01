@@ -54,14 +54,16 @@ class Settings(BaseSettings):
         def filter_models(client, platform: EndpointPlatforms) -> dict[str, LlmModel]:
             try:
                 client()
+                logging.info(f'Client for {platform} loaded successfully.')
             except EnvironmentError:
                 filtered_models = {}
                 for model_name, model in self.models.items():
-                    if model.endpoint_platform == platform:
+                    if model.endpoint_platform == platform.value:
                         continue
                     else:
                         filtered_models[model_name] = model
                 self.models = filtered_models
+                logging.info(f'Client for {platform} not loaded, {self.models = }.')
             return self.models
 
         for cl, pl in [(clients.bedrock_client, EndpointPlatforms.BEDROCK),
