@@ -58,13 +58,12 @@ class Settings(BaseSettings):
             except EnvironmentError:
                 filtered_models = {}
                 for model_name, model in self.models.items():
-                    logging.warning(f'{model.endpoint_platform == platform = }, {platform = }, {model.endpoint_platform = }.')
                     if model.endpoint_platform == platform:
                         continue
                     else:
                         filtered_models[model_name] = model
                 self.models = filtered_models
-                logging.warning(f'Client for {platform} not loaded, {self.models = }.')
+                logging.warning(f'Client for {platform} not loaded, respective models excluded.')
             return self.models
 
         for cl, pl in [(clients.bedrock_client, EndpointPlatforms.BEDROCK),
