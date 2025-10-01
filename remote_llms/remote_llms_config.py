@@ -50,11 +50,11 @@ class Settings(BaseSettings):
     ) -> tuple[PydanticBaseSettingsSource, ...]:
         return (YamlConfigSettingsSource(settings_cls),)
 
-    def model_post_init(self, context: Any, /) -> None:
+    def model_post_init(self, __context: Any) -> None:
         def filter_models(client, platform: EndpointPlatforms) -> dict[str, LlmModel]:
             try:
                 client()
-                logging.info(f'Client for {platform} loaded successfully.')
+                logging.warning(f'Client for {platform} loaded successfully.')
             except EnvironmentError:
                 filtered_models = {}
                 for model_name, model in self.models.items():
@@ -63,7 +63,7 @@ class Settings(BaseSettings):
                     else:
                         filtered_models[model_name] = model
                 self.models = filtered_models
-                logging.info(f'Client for {platform} not loaded, {self.models = }.')
+                logging.warning(f'Client for {platform} not loaded, {self.models = }.')
             return self.models
 
         for cl, pl in [(clients.bedrock_client, EndpointPlatforms.BEDROCK),
