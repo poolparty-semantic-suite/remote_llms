@@ -64,10 +64,10 @@ class Settings(BaseSettings):
                 self.models = filtered_models
             return self.models
 
-        for cl, pl in [(clients.bedrock_client(), EndpointPlatforms.BEDROCK),
-                       (clients.openai_client(), EndpointPlatforms.OPENAI),
-                       (clients.google_client(), EndpointPlatforms.GOOGLE),
-                       (clients.ollama_client(), EndpointPlatforms.OLLAMA),]:
+        for cl, pl in [(clients.bedrock_client, EndpointPlatforms.BEDROCK),
+                       (clients.openai_client, EndpointPlatforms.OPENAI),
+                       (clients.google_client, EndpointPlatforms.GOOGLE),
+                       (clients.ollama_client, EndpointPlatforms.OLLAMA),]:
             filter_models(cl, pl)
 
 
